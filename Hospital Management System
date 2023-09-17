@@ -1,0 +1,116 @@
+class Patient:
+    def __init__(self, id, name, age, bloodgroup):
+        self.id = id
+        self.name = name
+        self.age = age
+        self.bloodgroup = bloodgroup
+        self.next = None
+        self.prev = None
+
+
+class WRM:
+    def __init__(self):
+        self.head = Patient(None, None, None, None)
+        self.head.next = self.head
+        self.head.prev = self.head
+
+    def registerPatient(self, id, name, age, bloodgroup):
+        new_patient = Patient(id, name, age, bloodgroup)
+        new_patient.next = self.head
+        new_patient.prev = self.head.prev
+        self.head.prev.next = new_patient
+        self.head.prev = new_patient
+
+    def servePatient(self):
+        if self.head.next == self.head:
+            print("No patients in the waiting room.")
+            return
+
+        served_patient = self.head.next
+        self.head.next = self.head.next.next
+        self.head.next.prev = self.head
+
+        print("Serving patient:", served_patient.name)
+
+    def cancelAll(self):
+        if self.head.next== None:
+            print("No patients to cancel.")
+            return
+        self.head.next = self.head
+        self.head.prev = self.head
+
+        print("All appointments canceled.")
+
+    def canDoctorGoHome(self):
+        if self.head.next == self.head:
+            return True
+        else:
+            return False
+
+    def showAllPatients(self):
+        if self.head.next==self.head:
+            print("No patients in the waiting room.")
+            return
+        current = self.head.next
+
+        while current != self.head:
+            print(current.name,end=' ')
+            current = current.next
+
+
+# Tester code
+wrm = WRM()
+
+while True:
+    print('                   ')
+    print("Chooose an Option:")
+    print("1. Add Patient")
+    print("2. Serve Patient")
+    print("3. Show All Patients")
+    print("4. Can Doctor Go Home?")
+    print("5. Cancel All Appointments")
+    print("6. Exit")
+    print('==================')
+    choice = int(input("Enter your choice: "))
+
+    if choice == 1:
+        print("executing registerPatient()..")
+        print('           ')
+        id = int(input("Enter patient ID: "))
+        name = input("Enter patient name: ")
+        age = int(input("Enter patient age: "))
+        bloodgroup = input("Enter patient blood group: ")
+
+        wrm.registerPatient(id, name, age, bloodgroup)
+        print("Patient added successfully.")
+
+    elif choice == 2:
+        print("executing servePatient()..")
+        print('                ')
+        wrm.servePatient()
+
+    elif choice == 3:
+        print("executing showAllPatients()..")
+        print('                ')
+        wrm.showAllPatients()
+
+    elif choice == 4:
+        print("executing canDoctorGoHome()..")
+        print('                ')
+        if wrm.canDoctorGoHome():
+            print("Yes, doctor can go home.")
+        else:
+            print("No, patients are waiting.")
+
+    elif choice == 5:
+        print("executing cancelAll()..")
+        print('                ')
+        wrm.cancelAll()
+
+
+    elif choice == 6:
+        print("Thank you for wating..")
+        break
+    else:
+        print('No such option.')
+    print()
